@@ -1,4 +1,6 @@
-//Template that stores useful functions as they are made. Still need to add some of the original functions for completness. Will probably make a linked list class to store the functions in and import that in the future instead of having all the raw code in the file.
+//PROBLEM: Write a function that takes two liss, each of which is sorted in increasing order, and merges the two together into one list which is in increasing order and return it.
+//
+//EARLY NOTES: This is another problem I've already solved in my original sort solution. The sorted_merge function accomplishes what the problem asks. I will modify my main function to demonstrate
 #include <iostream>
 using namespace std;
 
@@ -16,10 +18,15 @@ void out_put(node *& head);
 
 int main()
 {
-	int arr[] = {1,2,3,4,5,6,7,8,9};
-	int n = sizeof(arr)/sizeof(arr[0]);
-	node * head = new node;
-	build(head,arr,n);
+	int arr_0[] = {1,3,5,7,9};
+	int arr_1[] = {2,4,6,8,10};
+	int n = sizeof(arr_0)/sizeof(arr_0[0]);
+	int m = sizeof(arr_1)/sizeof(arr_1[0]);
+	node * front = new node;
+	node * back = new node;
+	build(front,arr_0,n);
+	build(back,arr_1,m);
+	node * head = sorted_merge(front,back);
 	out_put(head);
 	return 0;
 }

@@ -1,4 +1,10 @@
-//Template that stores useful functions as they are made. Still need to add some of the original functions for completness. Will probably make a linked list class to store the functions in and import that in the future instead of having all the raw code in the file.
+//PROBLEM: Given a linked list and a positive integer K, find k'th node from the end in a linked list.
+//
+//EARLY NOTES: For a singlely linked list I don't think this can be done in one pass unless we have the number of nodes listed. However, two passes should be enough.
+//
+//PLANNING: Pass through the whole list once. Keeping a count of the number of nodes encountered. Then subtrack the node location from the count and then traverse again to find the node.
+//
+//FINAL NOTES: Solutions are nearly identical, both work qutie well.
 #include <iostream>
 using namespace std;
 
@@ -14,12 +20,38 @@ void merge(node *& head,int n);
 void build(node *& head,int arr[],int n);
 void out_put(node *& head);
 
+void k_node(node *& head, int k)
+{
+	int count = 0;
+	node * current = head;
+	while(current)
+	{
+		current = current->next;
+		count++;
+	}
+	count -= k;
+	if(count < 0)
+	{
+		cout << "K too large\n";
+	}
+	else
+	{
+		current = head;
+		while(current && count > 0)
+		{
+			current = current->next;
+			count--;
+		}
+		cout << "Kth node: " << current->data << endl;
+	}
+}
 int main()
 {
 	int arr[] = {1,2,3,4,5,6,7,8,9};
 	int n = sizeof(arr)/sizeof(arr[0]);
 	node * head = new node;
 	build(head,arr,n);
+	k_node(head, 4);
 	out_put(head);
 	return 0;
 }

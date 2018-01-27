@@ -1,4 +1,6 @@
-//Template that stores useful functions as they are made. Still need to add some of the original functions for completness. Will probably make a linked list class to store the functions in and import that in the future instead of having all the raw code in the file.
+//PROBLEM: Given two linked lists, merge their nodes together into first list by taking nodes alternately between the two lists. If first list uns out, remaining nodes of second list should not be moved.
+//
+//PLANNING: One while loop, and two traversing nodes.
 #include <iostream>
 using namespace std;
 
@@ -13,6 +15,7 @@ node * sorted_merge(node *& front, node *& back);
 void merge(node *& head,int n);
 void build(node *& head,int arr[],int n);
 void out_put(node *& head);
+
 
 int main()
 {

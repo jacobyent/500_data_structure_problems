@@ -1,4 +1,8 @@
-//Template that stores useful functions as they are made. Still need to add some of the original functions for completness. Will probably make a linked list class to store the functions in and import that in the future instead of having all the raw code in the file.
+//PROBLEM: GIven a linked list, sort it using merge sort algorithm.
+//
+//EARLY NOTES: Already accomplished in the earlier sorting problem.
+//
+//FINAL NOTES: As noted on techie with proper recursion the function should have a recursive depth of about log(n) mine works this way I believe. My list_merge function uses traversal rather than recursion which reduces function calls. 
 #include <iostream>
 using namespace std;
 
@@ -16,10 +20,11 @@ void out_put(node *& head);
 
 int main()
 {
-	int arr[] = {1,2,3,4,5,6,7,8,9};
+	int arr[] = {2,4,5,1,3,9,8,6,7};
 	int n = sizeof(arr)/sizeof(arr[0]);
 	node * head = new node;
 	build(head,arr,n);
+	merge(head,n);
 	out_put(head);
 	return 0;
 }
@@ -102,8 +107,6 @@ void merge(node *& head,int n)
 	merge(front, n/2);
 	merge(back, n/2);
 	head = sorted_merge(front,back);
-
-	node * current = head;
 }
 void build(node *& head,int arr[], int n)
 {
