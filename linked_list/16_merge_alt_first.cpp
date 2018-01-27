@@ -1,6 +1,8 @@
 //PROBLEM: Given two linked lists, merge their nodes together into first list by taking nodes alternately between the two lists. If first list uns out, remaining nodes of second list should not be moved.
 //
 //PLANNING: One while loop, and two traversing nodes.
+//
+//FINAL NOTES: Finally built a pop and insert function. Other than that the problem was fairly straight forward 
 #include <iostream>
 using namespace std;
 
@@ -15,15 +17,51 @@ node * sorted_merge(node *& front, node *& back);
 void merge(node *& head,int n);
 void build(node *& head,int arr[],int n);
 void out_put(node *& head);
+node * pop(node *& head)
+{
+	//removes the first node form the list, increments the list, and then returns the former head
+	if(head)
+	{
+		node * temp = head;
+		head = head->next;
+		return temp;
+	}
+}
+void insert(node *& head, node *& to_insert)
+{
+	//function to insert node directly after head
+	if(head && to_insert)
+	{
+		node * temp = head->next;
+		head->next = to_insert;
+		to_insert->next = temp;
+	}
+}
 
-
+void alt_merge(node *& first, node *& second)
+{
+	node * current = first;
+	node * temp;
+	while(current && second)
+	{
+		temp = pop(second);
+		insert(current, temp);
+		current = current->next->next;
+	}
+}
 int main()
 {
-	int arr[] = {1,2,3,4,5,6,7,8,9};
+	int arr[] = {1,2,3,4,5};
+	int arr_0[] = {6,7,8};
 	int n = sizeof(arr)/sizeof(arr[0]);
-	node * head = new node;
-	build(head,arr,n);
-	out_put(head);
+	int m = sizeof(arr_0)/sizeof(arr_0[0]);
+	node * first = new node;
+	node * second = new node;
+	build(first,arr,n);
+	build(second,arr_0, m);
+	alt_merge(first,second);
+	out_put(first);
+	out_put(second);
 	return 0;
 }
 

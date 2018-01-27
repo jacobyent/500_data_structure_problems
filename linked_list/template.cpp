@@ -13,6 +13,8 @@ node * sorted_merge(node *& front, node *& back);
 void merge(node *& head,int n);
 void build(node *& head,int arr[],int n);
 void out_put(node *& head);
+node * pop(node *& head);
+void insert(node *& head, node *& to_insert);
 
 int main()
 {
@@ -125,4 +127,27 @@ void out_put(node *& head)
 		current = current->next;
 	}
 	cout << endl;
+}
+
+node * pop(node *& head)
+{
+	//Removes the first node and returns it
+	if(head)
+	{
+		node * temp = head;
+		head = head->next;
+		return temp;
+	}
+	return NULL;
+}
+
+void insert(node *& head, node *& to_insert)
+{
+	//inserts the to_insert node next after the head
+	if(head && to_insert)
+	{
+		node * temp = head->next;
+		head->next = to_insert;
+		to_insert->next = temp;
+	}
 }
