@@ -1,8 +1,10 @@
-//Given a linked list and two positive integers M and N, delete every N nodes in it after skipping M nodes.
+//PROBLEM: GIven a linked list of integers, rearrange it such that every second node of the linked list is greater than its left and right nodes. In other words, rearrange the linked list in alternating high-low.
 //
-//PLANNING: First a for loop to move current to it's starting position (minus one to accomodate the delete next function). One while loop to traverse and two for loops inside. The first for loop is to delete the next node in the list. I delete the next node to preserve the list between deletions. The second for loop skips over the nodes that will not be deleted
+//EARLY NOTES: I believe this can be done in linear time and constant space. While it would be tempting to simply transfer the data values between the nodes I think it would be better to fully change the nodes in case the nodes have more values than just what we are comparing.
 //
-//FINAL NOTES: I built my solution iteratively compared to techie's recursion. Their solution is more elegant in some ways but recursion always has a cost. If I were to do this again I would lift their way of deleting the nodes. To properly delete my nodes I needed to engineer a solution that would delete the next node. Which made my code a little awkward. Simply deleting the nodes and then reattaching the list is better than trying to preserve the list while deleting everything.
+//PLANNING: First check if the head is greater than the next element. If it is switch and set head to the new value. Create two pointers current, and previous. Set previous equal to head and current equal to head->next. Also create a boolean value dictating if current is at a second node or not (to start with this value will be true). Then create a while loop that tests for current and current->next. Inside the loop test the boolean value. If we are at a second node test if the next value is greater than it's value. If it is swap, preserving the list with the previous pointer. If it isn't incremenet current, and previous. Either way swap the boolean value. Do the opposite if we aren't at a second node.
+//
+//FINAL NOTES: Techie's solution works  by just changing the data values in the nodes which I wanted to avoid. My solution takes a bit more work but overall still runs as efficent as predicted.
 #include <iostream>
 using namespace std;
 
@@ -19,45 +21,67 @@ void build(node *& head,int arr[],int n);
 void out_put(node *& head);
 node * pop(node *& head);
 void insert(node *& head, node *& to_insert);
-void delete_next_node(node *& head)
+void rearrange_high_low(node *& head)
 {
-	if(head && head->next)
+	node * temp;
+	if(head && head->next && head->data > head->next->data)
 	{
-		node * temp = head->next;
+		temp = head->next;
 		head->next = temp->next;
-		temp->next = NULL;
-		delete temp;
+		temp->next = head;
+		head = temp;
 	}
-}
-void delete_m_n(node *& head, int M, int N)
-{
-	node * current = head;
-	for(int i = 0; i < M -1 && current; i++)
+	bool second = true;
+	node * current = head->next;
+	node * previous = head;
+	while(current && current->next)
 	{
-		current = current->next;
-	} 
-	while(current)
-	{
-		for(int i = 0; i < N; i++)
+		if(second)
 		{
-			delete_next_node(current);
+			if(current->data < current->next->data)
+			{
+				temp = current->next;
+				current->next = temp->next;
+				temp->next = current;
+				previous->next = temp;
+				previous = previous->next;
+				current = previous->next;
+			}
+			else
+			{
+				previous = current;
+				current = current->next;
+			}
+			second = false;
 		}
-		for(int i = 0; i < M && current; i++)
+		else
 		{
-			current = current->next;
-		} 
+			if(current->data > current->next->data)
+			{
+				temp = current->next;
+				current->next = temp->next;
+				temp->next = current;
+				previous->next = temp;
+				previous = previous->next;
+				current = previous->next;
+			}
+			else
+			{
+				previous = current;
+				current = current->next;
+			}
+			second = true;
+		}	
 	}
 }
 
 int main()
 {
-	int arr[] = {1,2,3,4,5,6,7,8,9,10};
+	int arr[] = {1,2,3,4,5,6,7,8,9};
 	int n = sizeof(arr)/sizeof(arr[0]);
-	int M = 1;
-	int N = 3;
 	node * head = new node;
 	build(head,arr,n);
-	delete_m_n(head,M,N);
+	rearrange_high_low(head);
 	out_put(head);
 	return 0;
 }

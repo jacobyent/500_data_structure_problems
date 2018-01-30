@@ -1,8 +1,10 @@
-//Given a linked list and two positive integers M and N, delete every N nodes in it after skipping M nodes.
+//PROBLEM: Given a linked list containing 0's, 1's, and 2's, sort linked list by doing a single traversal of it.
 //
-//PLANNING: First a for loop to move current to it's starting position (minus one to accomodate the delete next function). One while loop to traverse and two for loops inside. The first for loop is to delete the next node in the list. I delete the next node to preserve the list between deletions. The second for loop skips over the nodes that will not be deleted
+//EARLY NOTE: My first thought would be to count the number of each and then fill in the list. However, this would require two traversals. My next thought is to use pointers to save insert locations for each number. However, I think that might be a little too complicated rearranging the list in place. Finally, I think removing the elements and creating three new lists and then reattaching them in the end will work best.
 //
-//FINAL NOTES: I built my solution iteratively compared to techie's recursion. Their solution is more elegant in some ways but recursion always has a cost. If I were to do this again I would lift their way of deleting the nodes. To properly delete my nodes I needed to engineer a solution that would delete the next node. Which made my code a little awkward. Simply deleting the nodes and then reattaching the list is better than trying to preserve the list while deleting everything.
+//PLANNING: Create 5 pointers: one head and tail for zero and one and a head pointer for 2. Then pass through the list. Pop each node and sort them into their relevant list. Once through the list attach the tail of the zero list to the head of the one's list and the tail of that list to the head of the 2's list. 
+//
+//FINALE NOTE: Solution worked well. Techie used roughly the same solution as I. However, theirs is a bit leaner and I didn't account for if any of the numbers were missing. Other than that mine runs in one go and uses constant space. 
 #include <iostream>
 using namespace std;
 
@@ -19,45 +21,71 @@ void build(node *& head,int arr[],int n);
 void out_put(node *& head);
 node * pop(node *& head);
 void insert(node *& head, node *& to_insert);
-void delete_next_node(node *& head)
+void sort_0_1_2(node *& head)
 {
-	if(head && head->next)
-	{
-		node * temp = head->next;
-		head->next = temp->next;
-		temp->next = NULL;
-		delete temp;
-	}
-}
-void delete_m_n(node *& head, int M, int N)
-{
+	node * zeroh = NULL;
+	node * zerot = NULL;
+	node * oneh = NULL;
+	node * onet = NULL;
+	node * twoh = NULL;
+	node * temp;
 	node * current = head;
-	for(int i = 0; i < M -1 && current; i++)
-	{
-		current = current->next;
-	} 
 	while(current)
 	{
-		for(int i = 0; i < N; i++)
+		temp = current->next;
+		if(current->data == 0)
 		{
-			delete_next_node(current);
+			if(zeroh)
+			{
+				current->next = zeroh;
+				zeroh = current;
+			}
+			else
+			{
+				zeroh = current;
+				zerot = current;
+			}
 		}
-		for(int i = 0; i < M && current; i++)
+		else if(current->data == 1)
 		{
-			current = current->next;
-		} 
+			if(oneh)
+			{
+				current->next = oneh;
+				oneh = current;
+			}
+			else
+			{
+				oneh = current;
+				onet = current;
+			}
+		}
+		else
+		{
+			if(twoh)
+			{
+				current->next = twoh;
+				twoh = current;
+			}
+			else
+			{
+				twoh = current;
+				twoh->next = NULL;
+			}
+		}
+		current = temp;
 	}
+	head = zeroh;
+	zerot->next = oneh;
+	onet->next = twoh;
 }
 
 int main()
 {
-	int arr[] = {1,2,3,4,5,6,7,8,9,10};
+	int arr[] = {0,1,2,2,1,0,0,2,0,1,1,0};
 	int n = sizeof(arr)/sizeof(arr[0]);
-	int M = 1;
-	int N = 3;
 	node * head = new node;
 	build(head,arr,n);
-	delete_m_n(head,M,N);
+	sort_0_1_2(head);
 	out_put(head);
 	return 0;
 }
