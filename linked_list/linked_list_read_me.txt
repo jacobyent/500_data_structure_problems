@@ -9,6 +9,7 @@ In the future working with linked lists I think I will first use/create a class 
 logic every time. 
 
 Looking over my code I noticed that I didn't comment nearly as much as I wanted.
+I think that my notes can be a bit verbose.
 Looking over everything I missed two problems: the palindrome problem and the move last node to front. 
 I'm not sure if I'll go back to them immediatly or at all, although the do look simple enough.
 I skipped over some of the sections that were just explanations and looking now I think I should've done the problems were you implement the list as a queue and stack.
