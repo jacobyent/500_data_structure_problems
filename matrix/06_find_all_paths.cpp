@@ -5,6 +5,8 @@
 //PLANNING: I believe there is some kind of queue implementation to solve this problem but I don't know how to do that. Instead I will use a recursive approach to explore all possible leafs on this search tree.
 //
 //FINAL NOTES: Simple enough but my original solution I was merely passing in an array by value. After reading techie's solution I realized that I haven't been using an array pointer but just an array in a number of my solutions. I changed this solution to a pointer to an array to save a significant amount of space that I didn't need to use. 
+//
+//EDIT 1: I just realized the arrays were always being passed by reference, otherwise my print functions in main wouldn't work after going through void functions. I'm not sure if I misunderstood techie on this problem but I didn't need assign my arrays to pointers because for these purposes int arr[] == int * arr;
 
 #include <iostream>
 #define N 3
