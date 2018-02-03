@@ -3,6 +3,8 @@
 //EARLY NOTES: We can build off our code from the previous problem. This time though we need to test every possible subarray. I believe this will take n4 time
 //
 //PLANNING: Use 4 location markers: top, left, bottom, right and loop through every possible combination. 
+//
+//FINAL NOTES: I ended up not using the markers and just for loop variables which worked just fine. Comparing code, techie's throws everything into one function where mine uses multiple functions. Both seem to work fine though. I really appreciate the build up to this problem. Problem 11 felt a bit weird at first but then doing 12 and 13 I understood. Great series of problems! 
 #include <iostream>
 #define N 5
 #define M 5
@@ -61,7 +63,7 @@ void find_max_sub(int mat[N][M],int aux[N][M])
 
 	//temporary variable to store the result of sum_out_put
 	int temp;
-
+	//test every possible submatrix, including single element matrices
 	for(int i = 0; i < N; i++)
 	{
 		for(int j = 0; j < N; j++)
@@ -103,7 +105,7 @@ int main()
 		{9,7,8,3,7},
 		{-6,-2,-1,2,-4},
 		{-7,5,5,2,-6},
-		{3,2,-9,-5,1}
+		{3,2,9,-5,1}
 	};
 	int aux[N][M] = {0};
 	preprocess(matrix,aux);
