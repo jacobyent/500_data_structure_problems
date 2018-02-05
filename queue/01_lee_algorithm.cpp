@@ -1,23 +1,23 @@
-//PROBLEM: Given a chess board, find the shortest distancce (minimum number of steps) taken by a Knight to reach given destination from given source.
+//PROBLEM: Given a maze in the form of the binary rectangular matrix, find length of the shortest path in a maze from given source to given destination.
 //
-//EARLY NOTES: I needed a lot of help on this one because it is my first queue problem. So my code is mainly just a copy of techie's code. However I will explain in my own words what is happening.
+//EARLY NOTES: Problem seems very similar to last problem. I copied over the code and will readjust the parts that are needed
 //
-//PLANNING: Breadth first search using a queue. Build a struct called node to store each move. Use a map to keep track of visited nodes. Run the queue until we reach the destination or until it is empty. 
+//PLANNING: Build a queue that will breadth first search for the destination. When we first encounter the destination node that will be the shortest path.
 //
-//FINAL NOTES: I think this was a good introduction to queues. I needed a lot of hand holding and hopefully in the next problem I'll need less
-
+//FINAL NOTES: Went as I expected. Their code is different but functionally the same. Learned what memset was. 
 #include <iostream>
 #include <queue>
 #include <map>
 #include <climits>
 
-#define N 8
+#define N 10
+#define M 10
 
 using namespace std;
 
 //these are for a our moves around the board
-const int row[] = {-2,-2,-1,-1,1,1,2,2};
-const int col[] = {-1,1,-2,2,-2,2,-1,1};
+const int row[] = {-1,0,0,1};
+const int col[] = {0,-1,1,0};
 
 struct Node
 {
@@ -37,13 +37,13 @@ struct Node
 bool valid(int x, int y)
 {
 	//function to check if a move is off the map
-	if(x < 0 || y < 0 || x >= N || y >= N)
+	if(x < 0 || y < 0 || x >= M || y >= N)
 	{
 		return false;
 	}
 	return true;
 }
-int BFS(Node src, Node des)
+int BFS(int mat[N][M], Node src, Node des)
 {
 	//map to track locations visited
 	map<Node, bool> visited;
@@ -54,7 +54,7 @@ int BFS(Node src, Node des)
 	//move source into stack
 	q.push(src);
 	
-	//while the q has entries run the loop
+	//while q has entries run the loop
 	while(!q.empty())
 	{
 		//front returns a refernce to the first item in the queue
@@ -80,13 +80,14 @@ int BFS(Node src, Node des)
 			//create entry for current node
 			visited[node] = true;
 
-			//check all 8 moves and add valid ones to the queue
-			for(int i = 0; i < 8; i++)
+			//check all 4 moves and add valid ones to the queue
+			for(int i = 0; i < 4; i++)
 			{
 				int x_1 = x + row[i];
 				int y_1 = y + col[i];
-
-				if(valid(x_1,y_1))
+				
+				//
+				if(valid(x_1,y_1) && mat[x_1][y_1])
 				{
 					q.push({x_1,y_1, dist + 1});
 				}
@@ -101,8 +102,21 @@ int BFS(Node src, Node des)
 }
 int main()
 {
-	Node src = {0,7};
-	Node des = {5,7};
-	cout << "number of moves to end: " << BFS(src,des) << endl;
+	//our maze
+	int mat[N][M] = {
+		{1,1,1,1,1,0,0,1,1,1},
+		{0,1,1,1,1,1,0,1,0,1},
+		{0,0,1,0,1,1,1,0,0,1},
+		{1,0,1,1,1,0,1,1,0,1},
+		{0,0,0,1,0,0,0,1,1,0},
+		{1,0,1,1,1,0,0,1,1,0},
+		{0,0,0,0,1,0,0,1,0,1},
+		{0,1,1,1,1,1,1,1,0,0},
+		{1,1,1,1,1,0,0,1,1,1},
+		{0,0,1,0,0,1,1,0,0,1}
+	};
+	Node src = {0,0};
+	Node des = {N-1,M-1};
+	cout << "number of moves to end: " << BFS(mat,src,des) << endl;
 	return 0;
 }
