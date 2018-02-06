@@ -3,6 +3,9 @@
 //EARLY NOTES: Another problem that we can adapt from the previous one. I copied the code over and of course will need to modify it
 //
 //PLANNING: Pass through the field searching for 0s. When one is found mark the adjacent cells as zero. Then enqueue all the first col cells in the queue, then procced as if it was a usual shortest path queue.
+//
+//FINAL NOTES: Fairly straight forward. Took me awhile to figure out to enqueue the first col but after that it was just small mistakes I was making. Had to modify the visited map to a matrix so it was easier to work with between functions.
+//
 #include <iostream>
 #include <queue>
 #include <map>
@@ -41,11 +44,8 @@ bool valid(int x, int y)
 	}
 	return true;
 }
-int BFS(int mat[N][M])
+int BFS(int mat[N][M],int visited[N][M])
 {
-	//map to track locations visited
-	map<Node, bool> visited;
-
 	//queue to check moves and continue the path
 	queue<Node> q;
 
@@ -55,7 +55,6 @@ int BFS(int mat[N][M])
 		if(mat[i][0])
 		{
 			Node node = {i,0};
-			visited[node] = true;
 			q.push(node);
 		}
 	}	
@@ -80,10 +79,10 @@ int BFS(int mat[N][M])
 		}
 
 		//skip this node if we've been here before
-		if(!visited.count(node))
+		if(!visited[x][y])
 		{
-			//create entry for current node
-			visited[node] = true;
+			//update visited
+			visited[x][y] = 1;
 
 			//check all 4 moves and add valid ones to the queue
 			for(int i = 0; i < 4; i++)
@@ -105,36 +104,32 @@ int BFS(int mat[N][M])
 	//return the max value if that occurs
 	return INT_MAX;
 }
-map<Node,bool> sensor(int mat[N][M])
+void sensor(int mat[N][M],int visited[N][M])
 {
 	int zr[] = {0,0,-1,-1,-1,1,1,1};
 	int zc[] = {-1,1,-1,0,1,-1,0,1};
-
-	map<Node, bool> visited;
 
 	for(int i = 0; i < N; i++)
 	{
 		for(int j = 0; j < M; j++)
 		{
-			if(mat[i][j] == 0)
+			//if either one is a one we ignore
+			if(!mat[i][j] && !visited[i][j])
 			{
-				Node node = {i,j};
-				visited[node] = true;
+				visited[i][j] = 1;
 				for(int y = 0; y < 8; y++)
 				{
 					int x = i + zr[y];
-					int z = j + zr[y];
-					Node node = {x,z};
-					if(valid(x,z) && !visited.count(node))
+					int z = j + zc[y];
+					if(valid(x,z))
 					{
-						visited[node] = true;
 						mat[x][z] = 0; 
+						visited[x][z] = 1;
 					}
 				}
 			}
 		}
 	}
-	return visited;
 }
 int main()
 {
@@ -151,7 +146,8 @@ int main()
 		{1,1,1,1,1,0,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1}
 	};
-	map<Node,bool> visited = sensor(mat);
+	int visited[N][M] = {0};
+	sensor(mat,visited);
 	for(int i = 0; i < N; i++)
 	{
 		for(int j = 0; j < M; j++)
@@ -160,6 +156,6 @@ int main()
 		}
 		cout << endl;
 	}
-	cout << "number of moves to end: " << BFS(mat) << endl;
+	cout << "number of moves to end: " << BFS(mat,visited) << endl;
 	return 0;
 }
