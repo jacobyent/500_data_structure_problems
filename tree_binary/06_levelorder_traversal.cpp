@@ -1,10 +1,8 @@
-//PROBLEM:
+//PROBLEM: Given a binary tree, print its nodes level by level. i.e. all nodes present at level 1 should be printed first followed by nodes of level 2 and son on.. All nodes for any level should be printed from left to right
 //
-//EARLY NOTES:
+//EARLY NOTES: I built this solution as part of my template I make for each problem set. I needed to print my trees so I knew they were working properly and bfs seemed like the best way to start
 //
-//PLANNING:
-//
-//FINAL NOTES:
+//PLANNING: BFS the tree. Add the root node to a queue. Then inside a loop pop and output the front node. Then add its left and right children if they exist to the queue
 
 #include <iostream>
 #include <queue>
@@ -104,7 +102,7 @@ void print_tree_level(Node *& root)
 int main()
 {
 	Node * root = new Node;
-	int height = 2;
+	int height = 3;
 	build_tree(root,height);
 	print_tree_level(root);
 	return 0;

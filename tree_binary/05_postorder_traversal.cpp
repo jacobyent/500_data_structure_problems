@@ -1,13 +1,12 @@
-//PROBLEM:
+//PROBLEM: Given a binary tree, write iterative and recursive solution to traverse the tree using in-order traversal in C++ and java.
 //
-//EARLY NOTES:
+//PLANNING: Create two stacks. One for the nodes, the other for the key values. Push the root node into the first stack. Then inside a loop pop the top of the node stack and push its data into the int stack. If it has left and/or right leafs push them onto the stack. Left first, then right. Once finished empty the int stack
 //
-//PLANNING:
-//
-//FINAL NOTES:
+//FINAL NOTES: I could not figure out how to only do one stack. I ended up looking at techie's solution which worked well. 
 
 #include <iostream>
 #include <queue>
+#include <stack>
 #include <cmath>
 
 using namespace std;
@@ -68,10 +67,10 @@ void print_tree_level(Node *& root)
 	//function to output the tree in a level or bfs method
 	if(!root)
 	{
-		cout << "Tree is empty\n";
+		cout << "tree is empty\n";
 		return;
 	}	
-	cout << "Tree in level traversal: ";
+	cout << "Tree in level order: ";
 	//will use a queue
 	queue<Node*> q;
 
@@ -101,11 +100,54 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
+void print_tree_postorder(Node *& root)
+{
+	if(!root)
+	{
+		cout << "Tree is empty\n";
+		return;
+	}
+	cout << "Tree in postorder: ";
+	//stack for nodes 
+	stack<Node*> stk;
+
+	//push root
+	stk.push(root);
+	
+	//stack for keys	
+	stack<int> out;	
+	
+	Node * cur;
+
+	//while the stack is not empty or the current pointer has a value
+	while(!stk.empty())
+	{
+		cur = stk.top();
+		stk.pop();
+
+		out.push(cur->key);
+
+		if(cur->left)
+			stk.push(cur->left);
+
+		if(cur->right)
+			stk.push(cur->right);
+	}
+	while(!out.empty())
+	{
+		cout << out.top() << " ";
+		out.pop();
+	}
+	cout << endl;
+	
+}
 int main()
 {
 	Node * root = new Node;
-	int height = 2;
+	int height = 3;
 	build_tree(root,height);
+	print_tree_postorder(root);
 	print_tree_level(root);
+	
 	return 0;
 }

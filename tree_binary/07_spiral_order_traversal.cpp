@@ -1,13 +1,6 @@
-//PROBLEM: Given a binary tree, write iterative and recursive solution to traverse the tree using in-order traversal in C++ and java.
+//PROBLEM: Given a binary tree, print its nodes level by level in spiral order. i.e. all nodes present at leve l1 should be printed first from left to right, followed by nodes of level 2 right to left, followed by nodes of level 3 from left to right and son on.. In other words, odd levels should be printed from left to right and even levels should be printed from right to left or vice versa
 //
-//EARLY NOTES: I will be skipping the recursive and java. I've already written a function that traverses in a level way. I think this method will require a stack instead of a queue.
-//
-//MID NOTES: I was going to use a map with the stack but then I thought that would probably be over kill so I looked at techie's solution. I will be implementing it
-//
-//PLANNING: Create a stack. Set a current pointer to the root. Then inside a while loop if the current element is not null push it onto the stack and move the current pointer to the left child. Else grab the first element from the stack, pop it and output it's data. Then set current to the right leaf.
-//
-//FINAL NOTES: Works like a charm. Hopefully won't need to peak at the answer for the next one.
-
+//EARLY NOTES: I think this should only require a small modification to the level output but that could be underestimating.
 #include <iostream>
 #include <queue>
 #include <stack>
@@ -18,9 +11,9 @@ using namespace std;
 //our basic node structure
 struct Node {
 	int key;
-	
+
 	Node *left, *right;
-	
+
 	//constructor	
 	Node(int value = 0)
 	{
@@ -33,7 +26,7 @@ struct Node {
 void build_tree(Node *& root, int height)
 {
 	//function to build a perfectly balanced tree of given height
-	
+
 	//initilize our tree	
 	root->key = 1;	
 
@@ -46,13 +39,13 @@ void build_tree(Node *& root, int height)
 
 	//number of nodes
 	int num = pow(2,height);
-	
+
 	int i = 2;
 	while(i < num)
 	{
 		//grab the lead node
 		Node * cur = q.front();
-		
+
 		//pop lead node
 		q.pop();
 
@@ -71,10 +64,10 @@ void print_tree_level(Node *& root)
 	//function to output the tree in a level or bfs method
 	if(!root)
 	{
-		cout << "tree is empty\n";
+		cout << "Tree is empty\n";
 		return;
 	}	
-	cout << "Tree in level order: ";
+	cout << "Tree in level traversal: ";
 	//will use a queue
 	queue<Node*> q;
 
@@ -85,7 +78,7 @@ void print_tree_level(Node *& root)
 	{
 		//Grab front element
 		Node * cur = q.front();
-		
+
 		//pop front element
 		q.pop();
 
@@ -104,50 +97,77 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
-void print_tree_inorder(Node *& root)
+void print_tree_spiral(Node *& root)
 {
+	//function to output the tree in a spiral order
 	if(!root)
 	{
 		cout << "Tree is empty\n";
 		return;
-	}
-	cout << "Tree in inorder: ";
-	//function to output the tree inorder
-	stack<Node*> s;
-	
-	//set a node pointer to the root
-	Node * cur = root;
-	
-	//while the stack is not empty or the current pointer has a value
-	while(!s.empty() || cur)
-	{
-		//if current has a value
-		if(cur)
-		{
-			//push the node onto the stack
-			s.push(cur);
+	}	
+	cout << "Tree in spiral order: ";
+	//two queues, even and odd
+	queue<Node*> odd;
+	stack<Node*> even;
 
-			//move current to the left node
-			cur = cur->left;
-		}
-		else
+	//enqueue first node
+	even.push(root);
+
+	//declare node pointer
+	Node * cur;
+
+	while(!odd.empty() || !even.empty())
+	{
+		while(!odd.empty())
 		{
-			cur = s.top();
-			s.pop();
+			//Grab front element
+			cur = odd.front();
+
+			//pop front element
+			odd.pop();
+
+			//output current element
 			cout << cur->key << " ";
-			cur = cur->right;
+
+			//add children if any to queue
+			if(cur->right)
+			{
+				even.push(cur->right);
+			}
+			if(cur->left)
+			{
+				even.push(cur->left);
+			}
+		}
+		while(!even.empty())
+		{
+			//Grab front element
+			cur = even.top();
+
+			//pop front element
+			even.pop();
+
+			//output current element
+			cout << cur->key << " ";
+
+			//add children if any to queue
+			if(cur->right)
+			{
+				odd.push(cur->right);
+			}
+			if(cur->left)
+			{
+				odd.push(cur->left);
+			}
 		}
 	}
 	cout << endl;
-	
 }
 int main()
 {
 	Node * root = new Node;
-	int height = 3;
+	int height = 4;
 	build_tree(root,height);
-	print_tree_inorder(root);
-	print_tree_level(root);
-	
+	print_tree_spiral(root);
 	return 0;
 }
