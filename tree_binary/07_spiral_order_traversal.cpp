@@ -1,6 +1,10 @@
 //PROBLEM: Given a binary tree, print its nodes level by level in spiral order. i.e. all nodes present at leve l1 should be printed first from left to right, followed by nodes of level 2 right to left, followed by nodes of level 3 from left to right and son on.. In other words, odd levels should be printed from left to right and even levels should be printed from right to left or vice versa
 //
 //EARLY NOTES: I think this should only require a small modification to the level output but that could be underestimating.
+//
+//PLANNING: Use two stacks, one for odd, one for even. Push the root onto the odd stack. Run a while loop that checks for both odd and even being empty. Then another while loop for each stack. Inside the odd loop pop the top element and add its children from left to right, then output. Do the same with the even stack but add right to left.
+//
+//FINAL NOTES: I'm pretty sure this program takes n space and is in n time. While there is two stacks each node only gets put into one stack. Techie's queue solution is probably better because they only initalize a single queue but they also have extra fixings. I imainge both implementations are quite quick.
 #include <iostream>
 #include <queue>
 #include <stack>
@@ -107,11 +111,11 @@ void print_tree_spiral(Node *& root)
 	}	
 	cout << "Tree in spiral order: ";
 	//two queues, even and odd
-	queue<Node*> odd;
+	stack<Node*> odd;
 	stack<Node*> even;
 
 	//enqueue first node
-	even.push(root);
+	odd.push(root);
 
 	//declare node pointer
 	Node * cur;
@@ -121,7 +125,7 @@ void print_tree_spiral(Node *& root)
 		while(!odd.empty())
 		{
 			//Grab front element
-			cur = odd.front();
+			cur = odd.top();
 
 			//pop front element
 			odd.pop();
@@ -130,13 +134,13 @@ void print_tree_spiral(Node *& root)
 			cout << cur->key << " ";
 
 			//add children if any to queue
-			if(cur->right)
-			{
-				even.push(cur->right);
-			}
 			if(cur->left)
 			{
 				even.push(cur->left);
+			}
+			if(cur->right)
+			{
+				even.push(cur->right);
 			}
 		}
 		while(!even.empty())
@@ -166,7 +170,7 @@ void print_tree_spiral(Node *& root)
 int main()
 {
 	Node * root = new Node;
-	int height = 4;
+	int height = 5;
 	build_tree(root,height);
 	print_tree_spiral(root);
 	return 0;
