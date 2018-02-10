@@ -25,6 +25,16 @@ struct Node {
 		left = NULL;
 		right = NULL; 
 	}
+	
+	//destructor
+	~Node()
+	{
+		key = 0;
+		delete left;
+		delete right;
+		left = NULL;
+		right = NULL;
+	}
 };
 
 void build_tree(Node *& root, int height)
@@ -78,10 +88,13 @@ void print_tree_level(Node *& root)
 	//enqueue first node
 	q.push(root);
 
+	//declare node pointer
+	Node * cur;
+
 	while(!q.empty())
 	{
 		//Grab front element
-		Node * cur = q.front();
+		cur = q.front();
 		
 		//pop front element
 		q.pop();
@@ -104,7 +117,7 @@ void print_tree_level(Node *& root)
 int main()
 {
 	Node * root = new Node;
-	int height = 2;
+	int height = 4;
 	build_tree(root,height);
 	print_tree_level(root);
 	return 0;
