@@ -1,11 +1,10 @@
-//PROBLEM:
+//PROBLEM: Given a binary tree, check if it is a sum tree or not. In a sum tree, value at each non-leaf node is equal to the sum of all elements present in its left and right subtree. The value of a leaf node can be anything.
 //
-//EARLY NOTES:
+//EARLY NOTES: The recursive method here would recurse down the tree returning the none leaf node's value. Then we'd check if the final value is equal to the root value. The iterative method would be to create a sum and pass through the whole tree adding non-leaf nodes to the sum. Then at the end we check if the sum is equal to the root node. 
 //
-//PLANNING:
+//PLANNING: Search through the tree using whatever order (exclude the root for this one). Create a sum value and initalize it to zero. Then, each non-leaf node add it's value to the running sum. At the end of the loop check if the root's value is equal to this sum. If it is not then the tree is not a sum tree.
 //
-//FINAL NOTES:
-
+//MID NOTES: So this solution doesn't work with their solution for making a sum tree in all cases. This solution only works if the sum tree is "perfect" i.e. every node is
 #include <iostream>
 #include <queue>
 #include <cmath>
@@ -128,11 +127,50 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
+int convert_sum(Node *& root)
+{
+	//base case
+	if(!root)
+	{
+		return 0;
+	}
+	int old = root->key;
+
+	//continue recursion and add left and right values to this node
+	root->key = convert_sum(root->left) + convert_sum(root->right);
+
+	//return new key value
+	return root->key + old;
+}
+int check_sum(Node *& root)
+{
+	//base case
+	if(!root)
+	{
+		return 0;
+	}
+	
+	//check for leafs
+	if(!root->left && !root->right)
+	{
+		return 0;
+	}
+	return root->key + check_sum(root->left) + check_sum(root->right);
+}
 int main()
 {
 	Node * root = new Node;
-	int height = 4;
+	int height = 3;
 	build_tree(root,height);
+	convert_sum(root);
 	print_tree_level(root);
+	if(check_sum(root->left) + check_sum(root->right) == root->key)
+	{
+		cout << "Tree is a sum tree\n";
+	}
+	else
+	{
+		cout << "Tree is not a sum tree\n";
+	}
 	return 0;
 }

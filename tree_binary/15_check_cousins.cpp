@@ -1,10 +1,10 @@
-//PROBLEM: Given a binary tree, determine if two given nodes are cousins of each other or not. Two nodes of a binary tree are cousins of each other only if they have different parents but are at the same level
+//PROBLEM: Given a binary tree, determine if two given nodes are cousins of each other or not. Two nodes of binary tree are cousins of each other only if they have different parents but they have same level
 //
-//EARLY NOTES: Definetly a level order approach.
+//EARLY NOTES: My first attempt at this solution involved checking the children of each node as we came across it in level order. The solution was more or less fine but it looked really ugly. After viewing techie's solution I restarted and implemented their parent solution. However, I changed my template a bit to include the parent in the constructor and destructor. 
 //
-//PLANNING: Check each node's left child for both of the canidates. If we find one search the right node for the other one. If they are the same then return that they are not cousins. If they are different check the rest of the level's children for the other cousin. If it is there then they are cousins. If we don't find it they aren't.
+//PLANNING: Traverse the tree in level order. If we encounter a cousin check the rest of the nodes in the level. If we don't find the other canidate then they aren't cousins and we can exit. If we do find the other canidiate then check their parents. If they have the same parent they are not cousins and we exit. If they are different then they are cousins and we can exit.
 //
-//FINAL NOTES:
+//FINAL NOTES: It occured to me that many of these problems could be rendered much more simple by keeping track of the height value inside the nodes themselves. This would of course use extra space but I'm curious about the trade off in terms of speed and extra space. Of course so far all these problems assume that we aren't given that value and have to traverse the bare minimum way. 
 
 #include <iostream>
 #include <queue>
@@ -12,18 +12,20 @@
 
 using namespace std;
 
-//our basic node structure
+//our not so basic node structure
 struct Node {
 	int key;
 
 	Node *left, *right;
+	Node *parent;
 
 	//constructor	
-	Node(int value = 0)
+	Node(int value = 0,Node * par = NULL)
 	{
 		key = value;
 		left = NULL;
 		right = NULL; 
+		parent = par;
 	}
 
 	//destructor
@@ -34,6 +36,18 @@ struct Node {
 		delete right;
 		left = NULL;
 		right = NULL;
+		if(parent)
+		{
+			if(parent->left == this)
+			{
+				parent->left = NULL;
+			}
+			else
+			{
+				parent->right = NULL;
+			}
+		}
+		parent = NULL;
 	}
 };
 
@@ -64,9 +78,9 @@ void build_tree(Node *& root, int height)
 		q.pop();
 
 		//create left and right children
-		cur->left = new Node(i++);
+		cur->left = new Node(i++,cur);
 
-		cur->right = new Node(i++);
+		cur->right = new Node(i++,cur);
 
 		q.push(cur->left);
 		q.push(cur->right);
@@ -114,22 +128,9 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
-bool check(Node * cur, int one, int two)
+bool check_cousins(Node *& root,int one, int two)
 {
-	//helper function to check if a node exists and value's mataches a cousin
-	if(!cur)
-	{
-		return false;
-	}
-	if(cur->key == one || cur->key == two)
-	{
-		return true;
-	}
-	return false;
-}
-bool cousin_check(Node *& root,int one, int two)
-{
-	//function to test for cousiness
+	//function to test if two numbers are cousins 
 	if(!root)
 	{
 		cout << "Tree is empty\n";
@@ -141,77 +142,79 @@ bool cousin_check(Node *& root,int one, int two)
 	//enqueue first node
 	q.push(root);
 
-	//declare node pointer and child temp pointers
+	//declare node pointer and parent pointer
 	Node * cur;
+	Node * par;
 
-	//our integers for counting the level
-	int i, size;
-
-	//bool value testing for couisness and exit bool
-	bool left;
-	bool right;
+	//ints for level traversal
+	int i,size;
 
 	while(!q.empty())
 	{
 		i = 0;
 		size = q.size();
+		par = NULL;
 		while(i < size)
 		{
-			//Grab front element
+			//Grab and pop front element
 			cur = q.front();
-
-			//pop front element
 			q.pop();
 
 			//increment counter
 			i++;
 
-			//this is slightly cleaner than writing it out long form
-			left = check(cur->left,one,two);
-			right = check(cur->right,one,two);
-
-			//if both left and right contain a canidate then they are not cousins
-			if(left && right)
+			//if the current node has a cousin
+			if(cur->key == one || cur->key == two)
 			{
-				return false;
+				//if parent is not null we've seen a cousin this level already
+				if(par && par != cur->parent)
+				{
+					//if this node doesn't have the same parent then we've found cousins
+					return true;
+				}
+				else if(par)
+				{
+					//this triggers if the parents are equal so we return false
+					return false;
+				}
+				//if par is still NULL we defualt and assign parent to par
+				par = cur->parent;
 			}
-			//if either contain a canidate then we test the rest of the level
-			else if(left || right)
+			//add children if any to queue
+			if(cur->left)
 			{
-				while(i < size)
-				{
-					cur = q.front();
-					q.pop();
-					left = check(cur->left,one,two);
-					right = check(cur->right,one,two);
-					if(left || right)
-					{
-						cousins = true;
-					}
-				}
+				q.push(cur->left);
 			}
-
-			else
+			if(cur->right)
 			{
-				//add children if any to queue
-				if(cur->left)
-				{
-					q.push(cur->left);
-				}
-				if(cur->right)
-				{
-					q.push(cur->right);
-				}
+				q.push(cur->right);
 			}
 		}
+		//if we've reached this point in the loop and par is flagged then we didn't find the other cousin and can return false
+		if(par)
+		{
+			return false;
+		}
 	}
-	return cousins;
+	//if we never see either candiate then we can return false
+	return false;
 }
 int main()
 {
 	Node * root = new Node;
 	int height = 4;
 	build_tree(root,height);
-	cousin_check(root, 4, 6);
+
+	int one = 1;
+	int two = 2;
+	if(check_cousins(root, one,two))
+	{
+		cout << one << " & " << two << " are cousins\n";
+	}
+	else
+	{
+		cout << one << " & " << two << " are not cousins\n";
+	}	
+	
 	return 0;
 }
