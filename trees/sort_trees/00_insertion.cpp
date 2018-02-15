@@ -1,8 +1,6 @@
-//PROBLEM:
+//PROBLEM: Insert given value inside BST
 //
-//EARLY NOTES:
-//
-//PLANNING:
+//PLANNING: Build a node pointer and a while loop. The pointer should start off pointing to root. Have the loop exit when we've found and created our new node. Every loop check cur's value against the insert value. If it is less than check the left child's value. If left child exists move cur to the left child. If it doesn't exist create our new node there. Do the same for the right child if the value is equal to or greater than cur.
 //
 //FINAL NOTES:
 
@@ -179,6 +177,46 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
+void insert(Node *& root,int value)
+{
+	//function to insert a node in a BST
+	
+	//traversal pointer
+	Node * cur = root;
+	
+	//loop to find the proper location
+	while(cur)
+	{
+		if(cur->key < value)
+		{
+			//if left child exists move cur and continue
+			if(cur->left)
+			{
+				cur = cur->left;
+			}
+			//if left doesn't exist this is the location
+			else
+			{
+				cur->left = new Node(value,cur);
+				cur = NULL;
+			}
+		}
+		else
+		{
+			//if right child exists move cur and continue
+			if(cur->right)
+			{
+				cur = cur->right;
+			}
+			//if right doesn't exist this is the location
+			else
+			{
+				cur->right = new Node(value,cur);
+				cur = NULL;
+			}
+		}
+	}	
+}
 int main()
 {
 	Node * root = new Node;
@@ -188,6 +226,7 @@ int main()
 		{"RL",16},{"RR",25}
 	};
 	build(root,v);
+	insert(root,18);
 	print_tree_level(root);
 	return 0;
 }

@@ -1,8 +1,8 @@
-//PROBLEM:
+//PROBLEM: Given a BST, write an efficient function to search a given key in it. The algorithm should return the parent node of the key and print if the key is left or right node of the parent node. If the key is not present in the BST, the algorithm should be able to determine that. 
 //
-//EARLY NOTES:
+//EARLY NOTES: We can borrow our insert model from 00 and change a few things.
 //
-//PLANNING:
+//PLANNING: Compare down the BST. If we find the key, return the parent node. If it is not in the tree return null.
 //
 //FINAL NOTES:
 
@@ -179,6 +179,69 @@ void print_tree_level(Node *& root)
 	}
 	cout << endl;
 }
+void insert(Node *& root,int value)
+{
+	//function to insert a node in a BST
+	
+	//traversal pointer
+	Node * cur = root;
+	
+	//loop to find the proper location
+	while(cur)
+	{
+		if(cur->key < value)
+		{
+			//if left child exists move cur and continue
+			if(cur->left)
+			{
+				cur = cur->left;
+			}
+			//if left doesn't exist this is the location
+			else
+			{
+				cur->left = new Node(value,cur);
+				cur = NULL;
+			}
+		}
+		else
+		{
+			//if right child exists move cur and continue
+			if(cur->right)
+			{
+				cur = cur->right;
+			}
+			//if right doesn't exist this is the location
+			else
+			{
+				cur->right = new Node(value,cur);
+				cur = NULL;
+			}
+		}
+	}	
+}
+Node * search(Node *& root, int key)
+{
+	//function to search for a given key value and return its parent
+	
+	Node * cur = root;
+
+	while(cur)
+	{
+		if(cur->key == key)
+		{
+			return cur->parent;
+		}
+		else if(cur->key > key)
+		{
+			cur = cur->left;
+		}
+		else
+		{
+			cur = cur->right;
+		}
+	}
+	return NULL;
+}
 int main()
 {
 	Node * root = new Node;
@@ -188,6 +251,18 @@ int main()
 		{"RL",16},{"RR",25}
 	};
 	build(root,v);
+
+	int ser = 9;
+
+	Node * test = search(root, ser);
+	if(test)
+	{
+		cout << "Parent of " << ser << " is " << test->key << endl;
+	}
+	else
+	{
+		cout << ser << " not in tree\n";
+	}
 	print_tree_level(root);
 	return 0;
 }
