@@ -1,10 +1,10 @@
-//PROBLEM:
+//PROBLEM: Given a Binary Tree, determine if it is a BST or not.
 //
-//EARLY NOTES:
+//EARLY NOTES: I believe we can traverse the tree checking if the left and right child of each node is less than or greater than it respectively.
 //
-//PLANNING:
+//PLANNING: Traverse in any order checking the children of each node. If any left child is greater than the parent or any right child is less than parent return false.
 //
-//FINAL NOTES: 
+//FINAL NOTES: So I missed the point that it is possible for a tree to meet the parent child condition and still not be a bst. I will now redo my solution to account for this.
 
 #include <iostream>
 #include <queue>
@@ -120,11 +120,72 @@ Node * build(int arr[],int n)
 
 	return root;
 }
+void delete_branch(Node *& root)
+{
+	//function to recursively delete a whole branch
+	
+	//base case
+	if(!root)
+	{
+		return;
+	}
+
+	//delete children before deleting root
+	delete_branch(root->left);
+	delete_branch(root->right);
+	delete root;
+}
+
+bool check_bst(Node * root)
+{
+	//function to check if tree is binary search tree or not
+	
+	//Make sure tree exists
+	if(!root)
+	{
+		return false;
+	}
+	
+	//create queue and enqueue root
+	queue<Node *> q;
+	q.push(root);
+	
+	//current pointer
+	Node * cur;
+
+	while(!q.empty())
+	{
+		//grab and pop front node
+		cur = q.front();
+		q.pop();
+		
+		if(cur->left->key > cur->key || cur->right->key < cur->key)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 int main()
 {
 	int arr[] = {15,10,20,8,12,18,25};
 	int n = sizeof(arr)/sizeof(arr[0]);
 	Node * root = build(arr,n);
+
+	//comment out these two lines to get the regular check
+	delete_branch(root->left);
+	root->left = new Node(100);
+
+
+	if(check_bst(root))
+	{
+		cout << "Tree is a binary sort tree!\n";
+	}
+	else
+	{
+		cout << "Tree is not a binary sort tree!\n";
+	}
+
 	level(root);
 	return 0;
 }

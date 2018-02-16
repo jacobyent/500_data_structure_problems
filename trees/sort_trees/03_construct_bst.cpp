@@ -1,10 +1,10 @@
-//PROBLEM:
+//PROBLEM: Given an unsorted array of integers which represents binary search tree keys, construct a height balanced BST from it.
 //
-//EARLY NOTES:
+//EARLY NOTES: This function will probably replace my build template for the bst problems. We can use the inbuilt sort function to sort the array. Then we can recursively build the tree by splitting the lists. I'm sure there is a way to build this iteratively but nothing comes to mind immediately
 //
-//PLANNING:
+//PLANNING: Sort the array. Then pick the middle element to be the root. Split the list into left and right arrays. Enter each list into a recursive function that returns a node pointer as its output. Set the left and right child of the root to the value of these functions. 
 //
-//FINAL NOTES: 
+//FINAL NOTES: I modified their solution a bit to accomodate my parent field. However, I realized I could still modify the parent field the same way with their solution.
 
 #include <iostream>
 #include <queue>
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-//node structure
+//our not so basic node structure
 struct Node {
 	int key;
 
@@ -80,25 +80,25 @@ void level(Node *& root)
 	cout << endl;
 }
 
-void build(int arr[], int low, int high, Node *& root)
+Node * build(int arr[], int low, int high)
 {
 	//recursive portion to build the bts
 	
 	//base case
 	if(low > high)
 	{
-		return;
+		return NULL;
 	}
 
 	//find middle element
 	int mid = (low + high)/2;
 
 	//create new node
-	root = new Node(arr[mid]);
+	Node * root = new Node(arr[mid]);
 	
 	//continue building
-	build(arr,low,mid-1,root->left);
-	build(arr,mid+1,high,root->right);
+	root->left = build(arr,low,mid-1);
+	root->right = build(arr,mid+1,high);
 	
 	//if left or right are created add to their parent field
 	if(root->left)
@@ -109,14 +109,16 @@ void build(int arr[], int low, int high, Node *& root)
 	{
 		root->right->parent = root;
 	}
+
+	//finally return the node pointer
+	return root;
 }
 Node * build(int arr[],int n)
 {
 	//function to sort the array for recursion
 	sort(arr,arr+n);
-	
-	Node * root;
-	build(arr,0,n-1,root);
+
+	Node * root = build(arr,0,n-1);
 
 	return root;
 }

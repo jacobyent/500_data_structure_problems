@@ -1,10 +1,10 @@
-//PROBLEM:
+//PROBLEM: Given two arrays which represent sets of BST keys, check if they represent the same BST or not. We are not allowed to build the trees.
 //
-//EARLY NOTES:
+//EARLY NOTES: I believe we can sort the arrays and then compare each element. This takes less space and has roughly the same execution time
 //
-//PLANNING:
+//PLANNING: First check if they are the same length. If they aren't return false. If they are sort them and compare each element in order. If any element differs they are not the same bsts.
 //
-//FINAL NOTES: 
+//FINALE NOTES: My solution doesn't actually work. Trees can have the same keys but not be the same. I will archive this and implement techie's solution.
 
 #include <iostream>
 #include <queue>
@@ -120,11 +120,37 @@ Node * build(int arr[],int n)
 
 	return root;
 }
+bool check_arrays(int X[],int n, int Y[], int m)
+{
+	if(n != m)
+	{
+		return false;
+	}
+	sort(X,X+n);
+	sort(Y,Y+n);
+
+	for(int i = 0; i < n; i++)
+	{
+		if(X[i] != Y[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
 int main()
 {
-	int arr[] = {15,10,20,8,12,18,25};
-	int n = sizeof(arr)/sizeof(arr[0]);
-	Node * root = build(arr,n);
-	level(root);
+	int X[] = {15,25,20,22,30,18,10,8,9,12,6};
+	int Y[] = {15,10,12,8,25,30,6,20,18,9,22};
+	int n = sizeof(X)/sizeof(X[0]);
+	int m = sizeof(Y)/sizeof(Y[0]);
+	if(check_arrays(X,n,Y,m))
+	{
+		cout << "X and Y are the same BST\n";
+	}
+	else
+	{
+		cout << "X and Y are NOT the same BST\n";
+	}
 	return 0;
 }
