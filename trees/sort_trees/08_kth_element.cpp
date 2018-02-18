@@ -2,12 +2,13 @@
 //
 //EARLY NOTES: I believe we can traverse in-order. When we've reached K elements that will be our smallest. Then we can traverse in reverse in-order and the kth element will be our largest.
 //
-//PLANNING: 
+//PLANNING: Traverse in order when we've reached K elements that will be our smallest. Then we can traverse in reverse in-order and the kth element will be our largest.
 //
-//FINAL NOTES: 
+//FINAL NOTES: Forgot that inorder required a stack not a queue. Was pretty cool to learn how to traverse in reverse inorder. Which seemed really simple once I figured it out.
 
 #include <iostream>
 #include <queue>
+#include <stack>
 #include <algorithm>
 
 using namespace std;
@@ -120,11 +121,111 @@ Node * build(int arr[],int n)
 
 	return root;
 }
+void kth_elements(Node * root, int k)
+{
+	//check the tree
+	if(!root)
+	{
+		return;
+	}
+
+	//create our stack
+	stack<Node*> stk;
+	
+	//declare our traversal pointer
+	Node * cur = root;
+
+	//declrae our count variable and initalize
+	int count = 0;
+
+	while(!stk.empty() || cur)
+	{
+		//if we have a node enqueue it and move to the left
+		if(cur)
+		{
+			stk.push(cur);
+			cur = cur->left;
+		}
+		//else we grab from the queue
+		else
+		{
+			cur = stk.top();
+			stk.pop();
+
+			//if this is the kth smallest node we output it and leave the loop
+			if(++count == k)
+			{
+				cout << "Kth smallest node: " << cur->key << endl;
+				break;
+			}
+
+			//else we move the current node to the right subtree 
+			cur = cur->right;
+		}
+	}
+	
+	//now for our largest
+	
+	//reset our stack, traversal pointer, and count
+	cur = root;
+	count = 0;
+	
+	//this will clear the stk efficetely
+	stack<Node*> temp;
+	swap(temp,stk);
+
+	while(!stk.empty() || cur)
+	{
+		if(cur)
+		{
+			stk.push(cur);
+			cur = cur->right;
+		}
+		else
+		{
+			cur = stk.top();
+			stk.pop();
+
+			if(++count == k)
+			{
+				cout << "Kth largest node: " << cur->key << endl;
+				break;
+			}
+
+			cur = cur->left;
+		}
+	}
+}
+void inorder(Node * root)
+{
+	stack<Node*> stk;
+
+	Node * cur = root;
+
+	while(!stk.empty() || cur)
+	{
+		if(cur)
+		{
+			stk.push(cur);
+			cur = cur->left;
+		}
+		else
+		{
+			cur = stk.top();
+			stk.pop();
+
+			cout << cur->key << " ";
+
+			cur = cur->right;
+		}
+	}
+}
 int main()
 {
 	int arr[] = {15,10,20,8,12,18,25};
 	int n = sizeof(arr)/sizeof(arr[0]);
 	Node * root = build(arr,n);
-	level(root);
+	kth_elements(root,2);
+	inorder(root);
 	return 0;
 }

@@ -1,4 +1,4 @@
-//PROBLEM:
+//PROBLEM: Find optimal cost to construct binary search tree where each key can repeat several times. We are given frequency of each key in same order as corresponding keys in inorder traversal of a BST.
 //
 //EARLY NOTES:
 //
