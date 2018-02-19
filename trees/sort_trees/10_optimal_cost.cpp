@@ -1,6 +1,8 @@
 //PROBLEM: Find optimal cost to construct binary search tree where each key can repeat several times. We are given frequency of each key in same order as corresponding keys in inorder traversal of a BST.
 //
-//EARLY NOTES:
+//EARLY NOTES: I don't think we will need to directly build any trees. Just figure out the position values for each valid tree. 
+//
+//MID NOTES: Was kind of at a loss for figuring this one out. I got stuck on having to build all valid trees. Looking at techie's solution I'm still not entirely sure how it works. So for now I think I'm going to set aside trees and go start something like strings or divide and conquer.
 //
 //PLANNING:
 //
